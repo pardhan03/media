@@ -52,9 +52,23 @@ impl Catalog {
     fn add(&mut self, media: Media) {
         self.items.push(media);
     }
+
+    fn get_by_index(&self, index: usize) -> Option<&Media> {
+        // &self.items[index]
+        if self.items.len() > index {
+            Some(&self.items[index])
+        } else {
+            None
+        }
+    }
 }
 fn print_media(media: Media) {
     println!("{:#?}", media)
+}
+
+enum MightHaveAValue<'a> {
+    ThereIsAValue(&'a Media),
+    NoValueAvailable
 }
 
 fn main() {
@@ -85,6 +99,32 @@ fn main() {
     catalog.add(placeholder);
 
     println!("{:#?}", catalog);
+
+    // this enforce us to handle the case in which we have a value and the case in which didn't
+    println!("{:#?}",catalog.items.get(0)); //Here we will get the value wrap inside the some()
+    println!("{:#?}",catalog.items.get(100)); // there is no item existe in this case we will get None
+
+    // match catalog.items.get(0) {
+    //     Option::Some(value) => {
+    //         println!("Item: {:#?}", value)
+    //     }
+    //     Option::None => {
+    //         println!("Nothing at that index")
+    //     }
+    // }
+
+    match  catalog.get_by_index(10) {
+        Some(value) => {
+            println!("{:#?}",  value)
+        }
+        None => {
+            println!("Nothing is at that index")
+        }
+    }
+
+    let item= catalog.get_by_index(1);
+    item.unwrap(); // unwrap the value from some
+    item.expect("Expected to be a item a here"); // if there  a none here instead of panic we will get this message
 
     println!("Hello, world!");
 }
